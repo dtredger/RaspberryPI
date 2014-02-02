@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="large-7 columns">
+
+        <div class="linebreaker">
+            <h2>Paste text here to remove line-breaks</h2>
+            <textarea id='oldText' class="wide"></textarea>
+        </div>
+
+        <button id='convert' onclick='removeBreaks()'>Convert</button>
+
+        <h2>New Text:</h2>
+        <div class="results">
+            <textarea id="newText" class="wide"></textarea>
+        </div>
+
+    </div>
+
+    <ul>
+     {% for storm_chaser in storm_chasers %}
+         <li>{{ storm_chaser }}</li>
+     {% end %}
+    </ul>
+{% end %}
+
+{% block footer %}
+  <p>2012 Storm Chaser
+      <ul>
+        <li><a href="http://carlosgabaldon.com">Home</a></li>
+        <li><a href="about">About</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+      </ul>
+  </p>
+{% end %}
