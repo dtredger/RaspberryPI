@@ -6,7 +6,7 @@ import tornado.web
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        page_arry = ["TIV 1", "TIV 2"]
+        page_arry = ["", ""]
         #self.set_cookie("cookie","cookieval")
         self.render("home.html",title="catfishes",storm_chasers=page_arry)
 

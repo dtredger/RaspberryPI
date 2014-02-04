@@ -9,7 +9,7 @@
 	    <script type="text/javascript">
 			$(document).ready(function(){
 	        	$().interstitial('open', {
-	            	'url' : 'http://dtredger.github.io/ads/hi_matt/index.html',
+	            	'url' : '{{ url_for('static', filename='ad.html') }}',
 	            	'width':300,
         			'height':250
 	              // ,'onInterstitialClose': function(){}

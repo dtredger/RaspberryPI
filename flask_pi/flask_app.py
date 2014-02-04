@@ -15,4 +15,7 @@ def hello():
     return render_template('main.html', **templateData)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=os.environ.get('SERVER_PORT', 8080), debug=True)
+    app.run(host='0.0.0.0',
+            port=os.environ.get('SERVER_PORT', 8080),
+            debug=os.environ.get('DEBUG', True)
+    )
