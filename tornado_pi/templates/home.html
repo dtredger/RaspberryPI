@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
     <div class="large-7 columns">
 
         <div class="linebreaker">
@@ -17,19 +18,15 @@
 
     </div>
 
-    <ul>
-     {% for storm_chaser in storm_chasers %}
-         <li>{{ storm_chaser }}</li>
-     {% end %}
-    </ul>
-{% end %}
+    <div>
+        {{humidity}}
+    </div>
 
-{% block footer %}
-  <p>
-      <ul>
-        <li><a href="http://dtredger.github.io">Home</a></li>
-        <li><a href="http://dtredger.github.io">Home again</a></li>
-        <li><a href="http://dtredger.github.io">Home!</a></li>
-      </ul>
-  </p>
+    <!--<ul>-->
+     <!--&lt;!&ndash;{% for storm_chaser in storm_chasers %}&ndash;&gt;-->
+         <!--&lt;!&ndash;<li>{{ storm_chaser }}</li>&ndash;&gt;-->
+     <!--&lt;!&ndash;{% end %}&ndash;&gt;-->
+    <!--</ul>-->
+
+
 {% end %}
