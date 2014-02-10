@@ -7,7 +7,7 @@ import serial
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        
+
         #self.set_cookie("cookie","cookieval")
         self.render("home.html",title="PiServer",humidity=read_humidity())
 
