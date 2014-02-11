@@ -4,21 +4,37 @@ import os
 import tornado.ioloop
 import tornado.web
 import serial
+import time
+import threading
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-
         #self.set_cookie("cookie","cookieval")
-        self.render("home.html",title="PiServer",humidity=read_humidity())
+        self.render(
+            "home.html",
+            title="PiServer",
+            humidity=fresh_humidity
+        )
 
 def read_humidity():
     try:
-        ser = serial.Serial('/dev/tty.usbmodem1421', 9600)
+        ser = serial.Serial('/dev/ttyACM0', 9600)
         sensor = ser.readline()
     except:
         sensor = "not connected"
     return sensor
 
+fresh_humidity = []
+
+def keep_reading():
+    while len(fresh_humidity) < 5:
+        fresh_humidity.append(read_humidity())
+        #fresh_humidity.pop(0)
+        time.sleep(2)
+        print(fresh_humidity)
+
+bg = threading.Thread(group=None, target=keep_reading())
+bg.run()
 
 handlers = [
     (r"/", MainHandler),

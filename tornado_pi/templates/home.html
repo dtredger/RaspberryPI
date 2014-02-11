@@ -2,16 +2,18 @@
 
 {% block content %}
 
-    <div class="large-7 columns">
+    <div class="large-7 push-1 columns">
 
         <div class="linebreaker">
-            <h2>Paste text here to remove line-breaks</h2>
+            <h1>Line-Break Remover</h1>
+            <br/>
+            <h3>Paste text here to remove line-breaks</h3>
             <textarea id='oldText' class="wide"></textarea>
         </div>
 
         <button id='convert' onclick='removeBreaks()'>Convert</button>
 
-        <h2>New Text:</h2>
+        <h3>New Text</h3>
         <div class="results">
             <textarea id="newText" class="wide"></textarea>
         </div>
