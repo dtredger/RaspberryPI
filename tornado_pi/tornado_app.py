@@ -3,41 +3,43 @@
 import os
 import tornado.ioloop
 import tornado.web
-import serial
-import time
-import threading
+import datetime
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        #self.set_cookie("cookie","cookieval")
+        if not self.get_cookie("greetings"):
+            self.set_cookie('greetings',
+                'human', domain=None,
+                expires=datetime.datetime.utcnow() + datetime.timedelta(days=365)
+            )
         self.render(
             "home.html",
             title="PiServer",
-            humidity=fresh_humidity
         )
 
-def read_humidity():
-    try:
-        ser = serial.Serial('/dev/ttyACM0', 9600)
-        sensor = ser.readline()
-    except:
-        sensor = "not connected"
-    return sensor
 
-fresh_humidity = []
+class DataMountainHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render(
+            "data.html",
+            title="PiServer",
+            humidity=get_humidity()
+        )
 
-def keep_reading():
-    while len(fresh_humidity) < 5:
-        fresh_humidity.append(read_humidity())
-        #fresh_humidity.pop(0)
-        time.sleep(2)
-        print(fresh_humidity)
 
-bg = threading.Thread(group=None, target=keep_reading())
-bg.run()
+def get_humidity(filename):
+    file = open(filename, 'r')
+    lines = file.readlines()
+    file.close()
+    return lines[-1]
+
+
+
 
 handlers = [
     (r"/", MainHandler),
+    (r"/datamountain", DataMountainHandler),
 ]
 
 settings = dict(
@@ -51,5 +53,7 @@ application = tornado.web.Application(
 
 
 if __name__ == '__main__':
-    application.listen(os.environ.get('SERVER_PORT', 8080))
+    port = os.environ.get('SERVER_PORT', 8080)
+    print "server starting on port %s" % port
+    application.listen(port)
     tornado.ioloop.IOLoop.instance().start()
