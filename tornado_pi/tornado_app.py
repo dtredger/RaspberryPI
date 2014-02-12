@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 ## -*- coding: utf-8 -*-
 import os
+import glob
 import tornado.ioloop
 import tornado.web
 import datetime
@@ -24,12 +25,15 @@ class DataMountainHandler(tornado.web.RequestHandler):
         self.render(
             "data.html",
             title="PiServer",
-            humidity=get_humidity()
+            humidity=get_humidity("/Users/dylantredger/code/python/RaspberryPI")
         )
 
 
-def get_humidity(filename):
-    file = open(filename, 'r')
+def get_humidity(folder):
+    os.chdir(folder)
+    newest = max(glob.iglob('*.*'), key=os.path.getctime)
+
+    file = open(newest, 'r')
     lines = file.readlines()
     file.close()
     return lines[-1]
