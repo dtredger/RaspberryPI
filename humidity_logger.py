@@ -18,14 +18,19 @@ def read_humidity():
 
 def log_output():
     timestamp = datetime.datetime.utcnow().replace( second=0, microsecond=0).strftime("%Y.%m.%d-%H:%M")
-    with open(os.environ.get('HUMID_LOG','hl_') + str(timestamp), 'w') as file:
-        #one file per day
-        while time.time() < ( time.time() + 86400):
-            file.write(str(int(time.time())) + " - " + read_humidity())
-            file.flush()
-            time.sleep(2)
-            print read_humidity()
-        file.close()
+    filename = os.environ.get('HUMID_LOG','hl_') + str(timestamp)
+    try:
+        print "writing to %s" % filename
+        with open(filename, 'w') as file:
+            #one file per day
+            while time.time() < ( time.time() + 86400):
+                file.write(str(int(time.time())) + " - " + read_humidity())
+                file.flush()
+                time.sleep(2)
+                print read_humidity()
+            file.close()
+    except:
+        print "couldn't write to %s" % filename
 
 while True:
     log_output()
