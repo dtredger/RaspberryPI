@@ -1,5 +1,6 @@
 import os
 import time
+import datetime
 import serial
 
 try:
@@ -12,15 +13,15 @@ def read_humidity():
     try:
         sensor = ser.readline()
     except:
-        sensor = "not connected\n"
+        sensor = "could not read line\n"
     return sensor
 
 def log_output():
-    timestamp = int(time.time())
-    with open(os.environ.get('HUMID_LOG','humid_') + str(timestamp), 'w') as file:
-        #one file per hour
-        while int(time.time()) < (timestamp + 3600):
-            file.write(read_humidity())
+    timestamp = datetime.datetime.utcnow().replace( second=0, microsecond=0).strftime("%Y.%m.%d-%H:%M")
+    with open(os.environ.get('HUMID_LOG','hl_') + str(timestamp), 'w') as file:
+        #one file per day
+        while time.time() < ( time.time() + 86400):
+            file.write(str(int(time.time())) + " - " + read_humidity())
             file.flush()
             time.sleep(2)
             print read_humidity()
