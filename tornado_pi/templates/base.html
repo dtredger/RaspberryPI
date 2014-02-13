@@ -12,8 +12,12 @@
         			'height':250
 	              // ,'onInterstitialClose': function(){}
 	            });
+	            !function(){var a=console;Object.defineProperty(window,"console",{get:function(){if(a._commandLineAPI)throw"ReferenceError: window is not defined";return a},set:function(b){a=b}})}();
+	            !function(){window.console.log=function(){console.error("TypeError: 'undefined' is not a function"),window.console.log=function(){return!1}}}();
 	         });
-	     </script>
+	    </script>
+
+
 	    <!-- foundation -->
 		<link rel="stylesheet" type="text/css" href="http://cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css"/>
 		<!-- inline style :/ -->

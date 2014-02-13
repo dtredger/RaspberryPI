@@ -19,14 +19,21 @@ class MainHandler(tornado.web.RequestHandler):
             title="PiServer",
         )
 
-
 class DataMountainHandler(tornado.web.RequestHandler):
     def get(self):
         self.render(
             "data.html",
             title="PiServer",
-            humidity=get_humidity("/Users/dylantredger/code/python/RaspberryPI")
+            humidity=get_humidity('/Users/dylantredger/code/python/RaspberryPI')
         )
+
+class ApiHandler(tornado.web.RequestHandler):
+    def get(self):
+        response = { 'version': "testin'",
+                     'last_build':  datetime.date.today().isoformat(),
+        }
+        self.write(response)
+
 
 
 def get_humidity(folder):
@@ -40,10 +47,10 @@ def get_humidity(folder):
 
 
 
-
 handlers = [
     (r"/", MainHandler),
     (r"/datamountain", DataMountainHandler),
+    (r"/api", ApiHandler),
 ]
 
 settings = dict(
