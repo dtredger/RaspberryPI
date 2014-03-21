@@ -6,6 +6,7 @@ DHT_BINARY = "./DHT_binary"
 
 def read_humidity():
 	try:
+		# check_output(compiled binary location, sensor type, Arduino GPIO port)
 		live_data = subprocess.check_output([DHT_BINARY, "2302", "4"])
 
 		temp_group = re.search("Temp =\s+([0-9.]+)", live_data)

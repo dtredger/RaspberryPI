@@ -1,3 +1,5 @@
+# TODO ------ rather than using os.fork, I'd prefer to simply run this in a screen and detach -----
+
 import os
 import sys
 import subprocess
@@ -44,7 +46,6 @@ def build_file_list():
 			if re.search(".(aac|mp3|wav|flac|m4a|pls|m3u)$", filename) != None: 
 				file_list.append(os.path.join(root, filename))
 	return file_list
-
 
 
 def play_songs(file_list):
