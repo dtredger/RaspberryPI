@@ -1,8 +1,10 @@
 RaspberryPI
 ===========
 
-There are three separate things set up:
+The Raspberry Pi is running Moebius v1.1.1, a small linux distro
+http://moebiuslinux.sourceforge.net
 
+There are three separate applications included in this repository:
 
 ####1) webserver_pi: (Tornado or Flask)
 
@@ -28,3 +30,9 @@ There are Enviro variables so the two apps will run locally (for testing) and on
 * SERVER_PORT is 80 on the PI, but can't be that on yer macbook, so let's make it 8080
 * DEBUG seems like it should be False for the PI, so that's set also.
 * HUMIDITY_LOG is where the csv files written by the humidity logger go. It falls back to the current directory.
+
+===========
+###Dependencies
+Are numerous in amount. A non-exhaustive list of them is:
+* ffmpeg
+* nginx
