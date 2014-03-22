@@ -28,7 +28,7 @@ def read_humidity():
 
 def log_output():
 	timestamp = datetime.datetime.utcnow().replace(second=0, microsecond=0).strftime("%Y-%m-%d_%H.%M")
-	filename = HUMIDITY_LOGS_LOCATION + "humidity_log_" + str(timestamp)
+	filename = HUMIDITY_LOGS_LOCATION + "humidity_log_" + str(timestamp) + ".csv"
 	try:
 		with open(filename, 'w') as file:
 			print "writing to %s" % filename
