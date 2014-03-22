@@ -39,8 +39,8 @@ class ApiHandler(tornado.web.RequestHandler):
 	def get(self):
 		sensor_data = get_humidity(HUMIDITY_LOG_LOCATION)
 		response = {'time': datetime.datetime.fromtimestamp(float(sensor_data[0])).strftime('%Y-%m-%d %H:%M:%S') + " UTC",
-					'data': {'temp': sensor_data[1],
-							'humidity': sensor_data[2],
+					'data': {'temp': sensor_data[1].strip(),
+							'humidity': sensor_data[2].strip(),
 							'timestamp': sensor_data[0]
 							}
 					}
