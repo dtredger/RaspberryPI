@@ -50,6 +50,16 @@ class ApiHandler(tornado.web.RequestHandler):
 # class WebhooksHandler(tornado.web.RequestHandler):
 #     def get(self):
 
+class GameHandler(tornado.web.RequestHandler):
+
+	def get(self):
+		if not self.get_cookie("game"):
+			self.set_cookie('game', 'playa', 
+							domain=None,
+							expires=datetime.datetime.utcnow() + datetime.timedelta(days=365)
+							)
+		self.render('bird.html')
+
 
 def get_humidity(folder):
 	os.chdir(folder)
@@ -66,6 +76,7 @@ handlers = [
 	(r"/", MainHandler),
 	(r"/datamountain", DataMountainHandler),
 	(r"/api", ApiHandler),
+	(r"/bird", GameHandler)
 	# (r"/webhooks", WebhooksHandler),
 ]
 
