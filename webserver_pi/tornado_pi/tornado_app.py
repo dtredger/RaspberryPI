@@ -58,7 +58,7 @@ class GameHandler(tornado.web.RequestHandler):
 							domain=None,
 							expires=datetime.datetime.utcnow() + datetime.timedelta(days=365)
 							)
-		self.render('bird.html')
+		self.render('bear.html')
 
 
 def get_humidity(folder):
@@ -76,7 +76,7 @@ handlers = [
 	(r"/", MainHandler),
 	(r"/datamountain", DataMountainHandler),
 	(r"/api", ApiHandler),
-	(r"/bird", GameHandler)
+	(r"/bear", GameHandler)
 	# (r"/webhooks", WebhooksHandler),
 ]
 
