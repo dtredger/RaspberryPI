@@ -1,7 +1,10 @@
+import tornado.web
+import tornado.websocket
+import tornado.ioloop
+
+
 import os
 import glob
-import tornado.ioloop
-import tornado.web
 import datetime
 
 HUMIDITY_LOG_LOCATION = '/500gb_hd/humidity_logs'
@@ -61,6 +64,20 @@ class GameHandler(tornado.web.RequestHandler):
 		self.render('bear.html')
 
 
+class WebSocketHandler(tornado.websocket.WebSocketHandler):
+
+	def open(self):
+		print 'connected'
+		self.write_message('you connected')
+
+	def on_message(self, message):
+		self.write_message(message)
+		
+	def on_close(self):
+		print 'conn closed'
+
+
+
 def get_humidity(folder):
 	os.chdir(folder)
 	newest = max(glob.iglob('*.*'), key=os.path.getctime)
@@ -72,12 +89,15 @@ def get_humidity(folder):
 	return lines[-1].split(',')
 
 
+
+
 handlers = [
 	(r"/", MainHandler),
 	(r"/datamountain", DataMountainHandler),
 	(r"/api", ApiHandler),
-	(r"/bear", GameHandler)
+	(r"/bear", GameHandler),
 	# (r"/webhooks", WebhooksHandler),
+	(r"/websocket", WebSocketHandler)
 ]
 
 settings = dict(
