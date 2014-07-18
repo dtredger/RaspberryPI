@@ -1,9 +1,9 @@
 import os
 import time
 
-TIMELAPSE_DIRECTORY = "/500gb_hd/timelapse/"
+TIMELAPSE_DIRECTORY = os.environ.get("TIMELAPSE_DIRECTORY","/500gb_hd/timelapse/")
 
-def capture_timelapse_images(interval_minutes=60):
+def capture_timelapse_images(interval_minutes):
     timestamp = int(time.time())
         
     # Define the size of the image you wish to capture. 

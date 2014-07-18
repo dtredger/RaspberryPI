@@ -11,16 +11,15 @@ import time
 
 fm_process = None
 on_off = ["off", "on"]
-
-frequency = 101.1
 shuffle = False
 repeat_all = True
 merge_audio_in = False
 play_stereo = True
 
 # --- reset these for your own settings ---
-MUSIC_DIRECTORY = "/500gb_hd/music"
-PIFM_BINARY_LOCATION = "/root/radio_pi/pifm"
+MUSIC_DIRECTORY = os.environ.get("MUSIC_DIRECTORY", "")
+PIFM_BINARY_LOCATION = os.environ.get("PIFM_BINARY_LOCATION","/pifm")
+RADIO_FREQUENCY = 101.1
 
 music_pipe_r,music_pipe_w = os.pipe()
 microphone_pipe_r,microphone_pipe_w = os.pipe()
@@ -49,7 +48,7 @@ def build_file_list():
 
 
 def play_songs(file_list):
-	print("Playing songs to frequency ", str(frequency))
+	print("Playing songs to RADIO_FREQUENCY ", str(RADIO_FREQUENCY))
 	print("Shuffle is " + on_off[shuffle])
 	print("Repeat All is " + on_off[repeat_all])
 	print("Stereo playback is " + on_off[play_stereo])
@@ -124,7 +123,7 @@ def setup():
 def run_pifm(use_audio_in=False):
 	global fm_process
 	with open(os.devnull, "w") as dev_null:
-		fm_process = subprocess.Popen([PIFM_BINARY_LOCATION,"-",str(frequency),"44100", "stereo" if play_stereo else "mono"], stdin=music_pipe_r, stdout=dev_null)
+		fm_process = subprocess.Popen([PIFM_BINARY_LOCATION,"-",str(RADIO_FREQUENCY),"44100", "stereo" if play_stereo else "mono"], stdin=music_pipe_r, stdout=dev_null)
 
 
 
