@@ -12,6 +12,7 @@ HUMIDITY_LOGS_LOCATION = os.environ.get("HUMIDITY_LOG_LOCATION","/500gb_hd/humid
 FILE_DURATION = 43200  #two files per day --> 60*60*24 / 2    ie (1/ 12 hrs)
 LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","/500gb_hd/temperature_humidity.db")
 LOG_TABLE_NAME = 'temp_humidity'
+
 def read_humidity():
     try:
         # check_output(compiled binary location, sensor type, Arduino GPIO port)
@@ -22,6 +23,8 @@ def read_humidity():
         
         humidity_group = re.search("Hum =\s+([0-9.]+)", live_data)
         humidity = float(humidity_group.group(1))
+
+        insert_into_db(temp, humidity)
 
         sensor_data = "T %s, H %s\n" % (temp, humidity)
     except:
@@ -52,7 +55,7 @@ def log_output(FILE_DURATION):
 def insert_into_db(temp, humidity):
     conn = sqlite3.connect(LOG_DATABASE_NAME)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO temp_humidity values(10100, 111, 2231)")
+    cursor.execute("INSERT INTO temp_humidity values(datetime('now'), {0}, {1})".format(temp, humidity))
     conn.commit()
     conn.close()
 
