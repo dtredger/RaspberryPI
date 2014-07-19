@@ -55,7 +55,7 @@ def log_output(FILE_DURATION):
 def insert_into_db(temp, humidity):
     conn = sqlite3.connect(LOG_DATABASE_NAME)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO temp_humidity values(datetime('now'), {0}, {1})".format(temp, humidity))
+    cursor.execute("INSERT INTO {0} values(datetime('now'), {1}, {2})".format(LOG_TABLE_NAME, temp, humidity))
     conn.commit()
     conn.close()
 

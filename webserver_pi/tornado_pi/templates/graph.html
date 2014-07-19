@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+	
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+
+      var chart_data = [['Time', 'Temperature', 'Humidity']]
+      convertListToArray("{{graph_data}}")
+
+      function convertListToArray (dataString) {
+        arr = dataString.replace(/&quot;/g,'').replace('[[','[').replace(']]',']')
+        arrays = arr.split('], ');
+        for (var i = arrays.length - 1; i >= 0; i--) {
+          vals = arrays[i].replace('[','').split(',');
+          vals[1] = parseInt(vals[1]);
+          vals[2] = parseInt(vals[2]);
+          chart_data.push(vals);
+        };
+      }
+
+      function drawChart() {  
+        var data = google.visualization.arrayToDataTable(chart_data);
+        var options = {
+          title: 'Temp + Humidity: {{data_points}} data-points',
+          vAxes: {
+            0: {logScale: false, title: 'temp', minValue: 10},
+            1: {logScale: false, title: 'humidity'}
+          },
+          series:{
+            0:{targetAxisIndex:0},
+            1:{targetAxisIndex:1},
+          }
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+
+    <div class="large-7 columns">
+    	<div id="chart_div" style="width: 900px; height: 500px;"></div>
+    </div>
+
+
+{% end %}
