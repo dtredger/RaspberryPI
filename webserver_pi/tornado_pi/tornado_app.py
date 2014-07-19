@@ -5,8 +5,11 @@ import tornado.ioloop
 import os
 import glob
 import datetime
+import sqlite3
+import json
 
 HUMIDITY_LOG_LOCATION = '/500gb_hd/humidity_logs'
+<<<<<<< HEAD
 
 # cribbed auth methods #
 class BaseHandler(tornado.web.RequestHandler):
@@ -31,12 +34,18 @@ def authenticated(func):
 class MainHandler(tornado.web.RequestHandler):
 
 	@authenticated
+=======
+LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","/500gb_hd/temperature_humidity.db")
+LOG_TABLE_NAME = 'temp_humidity'
+
+class MainHandler(tornado.web.RequestHandler):
+>>>>>>> release/chart_1.0
 	def get(self):
 		if not self.get_cookie("greetings"):
 			self.set_cookie('greetings', 'human', 
-							domain=None,
-							expires=datetime.datetime.utcnow() + datetime.timedelta(days=365)
-							)
+				domain=None,
+				expires=datetime.datetime.utcnow() + datetime.timedelta(days=365)
+				)
 		self.render(
 			"home.html",
 			title="Cuddlefish PiServer",
@@ -44,7 +53,6 @@ class MainHandler(tornado.web.RequestHandler):
 
 
 class DataMountainHandler(tornado.web.RequestHandler):
-
 	def get(self):
 		sensor_data=get_humidity(HUMIDITY_LOG_LOCATION)
 		self.render(
@@ -55,9 +63,22 @@ class DataMountainHandler(tornado.web.RequestHandler):
 			humidity=sensor_data[2]
 		)
 
+class GraphHandler(tornado.web.RequestHandler):
+	def get(self, path='/100'):
+		if path[1:].isdigit():
+			path = path[1:]
+		else:
+			path = '100'
+		graph_data=read_database(path)
+		self.render(
+			"graph.html",
+			title="Cuddlefish PiServer",
+			data_points=len(graph_data),
+			graph_data=tornado.escape.json_encode(graph_data)
+		)
+
 
 class ApiHandler(tornado.web.RequestHandler):
-
 	def get(self):
 		sensor_data = get_humidity(HUMIDITY_LOG_LOCATION)
 		response = {'time': datetime.datetime.fromtimestamp(float(sensor_data[0])).strftime('%Y-%m-%d %H:%M:%S') + " UTC",
@@ -68,6 +89,7 @@ class ApiHandler(tornado.web.RequestHandler):
 					}
 		self.write(response)
 
+<<<<<<< HEAD
 
 class v2_ApiHandler(tornado.web.RequestHandler):
 
@@ -90,13 +112,18 @@ class v2_ApiHandler(tornado.web.RequestHandler):
 		}    
 		self.write(data)
 
+=======
+class v2ApiHandler(tornado.web.RequestHandler):
+	def get(self):
+		data = read_database()
+		self.write(str(data))
+>>>>>>> release/chart_1.0
 
 # TODO - github is capable of sending JSON on certain events
 # class WebhooksHandler(tornado.web.RequestHandler):
 #     def get(self):
 
 class GameHandler(tornado.web.RequestHandler):
-
 	def get(self):
 		if not self.get_cookie("game"):
 			self.set_cookie('game', 'playa', 
@@ -126,18 +153,33 @@ def get_humidity(folder):
 	file = open(newest, 'r')
 	lines = file.readlines()
 	file.close()
-
 	# returns a line of csv like ['1395513142', ' T 19.2', ' H 31.1\n']	
 	return lines[-1].split(',')
 
+def read_database(row_count='100'):
+	conn=sqlite3.connect(LOG_DATABASE_NAME)
+	cursor=conn.cursor()
+	cursor.execute("SELECT * FROM {0} ORDER BY timestamp desc limit {1}".format(LOG_TABLE_NAME, row_count))
+	rows=cursor.fetchall()
+	conn.close()
+	results = [list(row) for row in rows]
+	for row in results:
+		row[0] = str(row[0])
+	return rows
 
 
 
 handlers = [
 	(r"/", MainHandler),
 	(r"/datamountain", DataMountainHandler),
+	(r"/graph(.*)", GraphHandler),
 	(r"/api", ApiHandler),
+<<<<<<< HEAD
 	(r"/bear", GameHandler),
+=======
+	(r"/v2/api", v2ApiHandler),
+	(r"/bear", GameHandler)
+>>>>>>> release/chart_1.0
 	# (r"/webhooks", WebhooksHandler),
 	(r"/websocket", WebSocketHandler),
 	(r"/v2/api", v2_ApiHandler),

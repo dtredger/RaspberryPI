@@ -1,5 +1,8 @@
 # this things I ignore
 
 .idea/*
+<<<<<<< HEAD
 
+=======
+>>>>>>> release/chart_1.0
 enviro_variables.txt
