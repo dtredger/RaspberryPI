@@ -6,40 +6,12 @@ import os
 import glob
 import datetime
 import sqlite3
-import json
 
 HUMIDITY_LOG_LOCATION = '/500gb_hd/humidity_logs'
-<<<<<<< HEAD
-
-# cribbed auth methods #
-class BaseHandler(tornado.web.RequestHandler):
-    def get_current_user(self):
-        user_json = self.get_cookie("greetings")
-        if not user_json:
-            return None
-        return tornado.escape.json_decode(user_json)
-
-
-def authenticated(func):
-    def wrapped_get(self, fn=None):
-    	# craps out: claims func should have 1 arg
-        # if 'localhost' in self.request.host:
-        #     return func(self, fn)
-        # else:
-        return tornado.web.authenticated(func)(self, fn)
-    return wrapped_get
-
-
-
-class MainHandler(tornado.web.RequestHandler):
-
-	@authenticated
-=======
 LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","/500gb_hd/temperature_humidity.db")
 LOG_TABLE_NAME = 'temp_humidity'
 
 class MainHandler(tornado.web.RequestHandler):
->>>>>>> release/chart_1.0
 	def get(self):
 		if not self.get_cookie("greetings"):
 			self.set_cookie('greetings', 'human', 
@@ -89,35 +61,10 @@ class ApiHandler(tornado.web.RequestHandler):
 					}
 		self.write(response)
 
-<<<<<<< HEAD
-
-class v2_ApiHandler(tornado.web.RequestHandler):
-
-	def get(self):
-		data = {
-			0: {
-		        "age": 0, 
-		        "id": "motorola-xoom-with-wi-fi",
-		        "imageUrl": "img/phones/motorola-xoom-with-wi-fi.0.jpg",
-		        "name": "Motorola XOOM\u2122 with Wi-Fi",
-		        "snippet": "The Next,NextXOOM with Wi-Fi,the world's first tablet powered by Android 3.0 (Honeycomb)."
-		    },
-		    1: {
-		        "age": 1,
-		        "id": "motorola-xoom",
-		        "imageUrl": "img/phones/motorola-xoom.0.jpg",
-		        "name": "MOTOROLA XOOM\u2122",
-		        "snippet": "Theience the future with MOTOROLA XOOM,the world's first tablet powered by Android 3.0 (Honeycomb)."
-		    }
-		}    
-		self.write(data)
-
-=======
 class v2ApiHandler(tornado.web.RequestHandler):
 	def get(self):
 		data = read_database()
 		self.write(str(data))
->>>>>>> release/chart_1.0
 
 # TODO - github is capable of sending JSON on certain events
 # class WebhooksHandler(tornado.web.RequestHandler):
@@ -174,12 +121,8 @@ handlers = [
 	(r"/datamountain", DataMountainHandler),
 	(r"/graph(.*)", GraphHandler),
 	(r"/api", ApiHandler),
-<<<<<<< HEAD
-	(r"/bear", GameHandler),
-=======
 	(r"/v2/api", v2ApiHandler),
 	(r"/bear", GameHandler)
->>>>>>> release/chart_1.0
 	# (r"/webhooks", WebhooksHandler),
 	(r"/websocket", WebSocketHandler),
 	(r"/v2/api", v2_ApiHandler),
