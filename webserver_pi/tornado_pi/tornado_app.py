@@ -7,20 +7,23 @@ import glob
 import datetime
 import sqlite3
 
-HUMIDITY_LOG_LOCATION = '/500gb_hd/humidity_logs'
+HUMIDITY_LOG_LOCATION = "/500gb_hd/humidity_logs"
 LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","/500gb_hd/temperature_humidity.db")
-LOG_TABLE_NAME = 'temp_humidity'
+LOG_TABLE_NAME = "temp_humidity"
+TIMELAPSE_PHOTOS_PATH = os.environ.get("TIMELAPSE_PHOTOS_PATH", "/Users/dylantredger/rpi_photes/")
 
 class MainHandler(tornado.web.RequestHandler):
 	def get(self):
+		# self.set_header("Access-Control-Allow-Origin", "*")
 		if not self.get_cookie("greetings"):
-			self.set_cookie('greetings', 'human', 
+			self.set_cookie("greetings", "human", 
 				domain=None,
 				expires=datetime.datetime.utcnow() + datetime.timedelta(days=365)
 				)
 		self.render(
 			"home.html",
 			title="Cuddlefish PiServer",
+			newest_picture=get_newest_picture(TIMELAPSE_PHOTOS_PATH)
 		)
 
 
@@ -30,21 +33,21 @@ class DataMountainHandler(tornado.web.RequestHandler):
 		self.render(
 			"data.html",
 			title="Cuddlefish PiServer",
-			time=datetime.datetime.fromtimestamp(float(sensor_data[0])).strftime('%Y-%m-%d %H:%M:%S') + " UTC",
+			time=datetime.datetime.fromtimestamp(float(sensor_data[0])).strftime("%Y-%m-%d %H:%M:%S") + " UTC",
 			temperature=sensor_data[1],
 			humidity=sensor_data[2]
 		)
 
 class GraphHandler(tornado.web.RequestHandler):
-	def get(self, path='/100'):
+	def get(self, path="/100"):
 		if path[1:].isdigit():
 			path = path[1:]
 		else:
-			path = '100'
+			path = "100"
 		graph_data=read_database(path)
 		self.render(
 			"graph.html",
-			title="Cuddlefish PiServer",
+			title="Cuddlefish PiServer | Live Temp + Humidity",
 			data_points=len(graph_data),
 			graph_data=tornado.escape.json_encode(graph_data)
 		)
@@ -52,45 +55,38 @@ class GraphHandler(tornado.web.RequestHandler):
 
 class ApiHandler(tornado.web.RequestHandler):
 	def get(self):
+		self.set_header("Access-Control-Allow-Origin", "http://localhost:8080")
+		self.set_header("Access-Control-Allow-Credentials", "true")
 		sensor_data = get_humidity(HUMIDITY_LOG_LOCATION)
-		response = {'time': datetime.datetime.fromtimestamp(float(sensor_data[0])).strftime('%Y-%m-%d %H:%M:%S') + " UTC",
-					'data': {'temp': sensor_data[1].strip(),
-							'humidity': sensor_data[2].strip(),
-							'timestamp': sensor_data[0]
-							}
-					}
+		response = {
+			"time": datetime.datetime.fromtimestamp(float(sensor_data[0])).strftime("%Y-%m-%d %H:%M:%S") + " UTC",
+			"data": {
+				"temp": sensor_data[1].strip(),
+				"humidity": sensor_data[2].strip(),
+				"timestamp": sensor_data[0]
+			}
+		}
 		self.write(response)
 
 class v2ApiHandler(tornado.web.RequestHandler):
 	def get(self):
+		self.set_header('Access-Control-Allow-Origin', '*')
+		self.set_header('Access-Control-Allow-Credentials', 'true')
 		data = read_database()
 		self.write(str(data))
 
-# TODO - github is capable of sending JSON on certain events
-# class WebhooksHandler(tornado.web.RequestHandler):
-#     def get(self):
 
-class GameHandler(tornado.web.RequestHandler):
+class TimelapseHandler(tornado.web.RequestHandler):
 	def get(self):
-		if not self.get_cookie("game"):
-			self.set_cookie('game', 'playa', 
-							domain=None,
-							expires=datetime.datetime.utcnow() + datetime.timedelta(days=365)
-							)
-		self.render('bear.html')
+		folder = "/Users/dylantredger/rpi_photes"
+		image_uri= folder + "/" + get_newest_picture(folder)
+		self.render("picture.html",
+			image_uri=image_uri,
+			image_url="file://{0}".format(image_uri),
+			title="Cuddlefish PiServer | Timelapse Photos"
+			)
 
 
-class WebSocketHandler(tornado.websocket.WebSocketHandler):
-
-	def open(self):
-		print 'connected'
-		self.write_message('you connected')
-
-	def on_message(self, message):
-		self.write_message(message)
-		
-	def on_close(self):
-		print 'conn closed'
 
 
 
@@ -114,6 +110,12 @@ def read_database(row_count='100'):
 		row[0] = str(row[0])
 	return rows
 
+def get_newest_picture(folder):
+	original_path = os.getcwd()
+	os.chdir(folder)
+	newest = max(glob.iglob('*.*'), key=os.path.getctime)
+	os.chdir(original_path)
+	return newest
 
 
 handlers = [
@@ -122,23 +124,24 @@ handlers = [
 	(r"/graph(.*)", GraphHandler),
 	(r"/api", ApiHandler),
 	(r"/v2/api", v2ApiHandler),
-	(r"/bear", GameHandler)
+	(r"/timelapse", TimelapseHandler),
+	(r"/pic/(.*)", tornado.web.StaticFileHandler, {'path':TIMELAPSE_PHOTOS_PATH})
+	# (r"/bear", GameHandler)
 	# (r"/webhooks", WebhooksHandler),
-	(r"/websocket", WebSocketHandler),
-	(r"/v2/api", v2_ApiHandler),
+	# (r"/websocket", WebSocketHandler),
 ]
 
 settings = dict(
 	template_path=os.path.join(os.path.dirname(__file__), "templates"),
-	static_path=os.path.join(os.path.dirname(__file__), "static"),
-	login_url="/bear", #tornado @authenticated redirects to here
+	static_path=os.path.join(os.path.dirname(__file__), "static")
+	# login_url="/bear", #tornado @authenticated redirects to here
 )
 
 application = tornado.web.Application(handlers, **settings)
 
 
 if __name__ == '__main__':
-	port = os.environ.get('SERVER_PORT', 8080)
+	port = os.environ.get('SERVER_PORT', 8000)
 	print "server starting on port %s" % port
 	application.listen(port)
 	tornado.ioloop.IOLoop.instance().start()
