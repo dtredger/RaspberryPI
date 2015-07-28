@@ -5,6 +5,7 @@ FROM resin/rpi-raspbian:wheezy-2015-01-15
 
 #Install python2 and pip
 RUN apt-get update && apt-get install -yq --no-install-recommends \
+		build-essential \
 		python \
 		python-dev \
 		python-dbus \
@@ -15,7 +16,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
 RUN pip install tornado
 
 #copy our python source into /app in the container
-COPY src/ /app
+COPY . /app
 
 #run main.py when the container starts
 
