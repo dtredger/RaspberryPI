@@ -124,8 +124,7 @@ handlers = [
 	(r"/v2/api", v2ApiHandler),
 	(r"/bear", GameHandler)
 	# (r"/webhooks", WebhooksHandler),
-	(r"/websocket", WebSocketHandler),
-	(r"/v2/api", v2_ApiHandler),
+	# (r"/websocket", WebSocketHandler),
 ]
 
 settings = dict(
