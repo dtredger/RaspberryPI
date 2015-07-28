@@ -3,13 +3,21 @@
 
 FROM resin/rpi-raspbian:wheezy-2015-01-15
 
-# Install Python.
-RUN apt-get update && apt-get install -y python
+#Install python2 and pip
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+		python \
+		python-dev \
+		python-dbus \
+		python-pip \
+	&& rm -rf /var/lib/apt/lists/*
 
-# won-t work fer now
-# RUN tar xvzf tornado-4.2.1.tar.gz
-# RUN cd tornado-4.2.1
-# RUN python setup.py build
-# RUN sudo python setup.py install
+#install python packages with pip
+RUN pip install tornado
 
-# CMD ["python", "webserver_pi/tornado_pi/tornado_app.py"]
+#copy our python source into /app in the container
+COPY src/ /app
+
+#run main.py when the container starts
+CMD ["python","/app/main.py"]
+
+CMD ["python", "/app/webserver_pi/tornado_pi/tornado_app.py"]
