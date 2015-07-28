@@ -18,6 +18,5 @@ RUN pip install tornado
 COPY src/ /app
 
 #run main.py when the container starts
-CMD ["python","/app/main.py"]
 
 CMD ["python", "/app/webserver_pi/tornado_pi/tornado_app.py"]
