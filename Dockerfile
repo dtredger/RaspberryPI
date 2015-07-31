@@ -25,7 +25,7 @@ COPY . /app
 
 
 #create database & table
-RUN ./app/database_setup.sh
+RUN sudo ./app/database_setup.sh
 
 #run main.py when the container starts
 RUN supervisord -c /app/supervisord.conf
