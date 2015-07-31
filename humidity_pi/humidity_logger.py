@@ -8,9 +8,9 @@ import sqlite3
 
 DHT_BINARY = "./DHT_binary"
 SENSOR_DELAY = 3
-HUMIDITY_LOGS_LOCATION = os.environ.get("HUMIDITY_LOG_LOCATION","/500gb_hd/humidity_logs") + "/"
+HUMIDITY_LOGS_LOCATION = os.environ.get("HUMIDITY_LOG_LOCATION","/data/humidity_logs") + "/"
 FILE_DURATION = 43200  #two files per day --> 60*60*24 / 2    ie (1/ 12 hrs)
-LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","/500gb_hd/temperature_humidity.db")
+LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","/data/temperature_humidity.db")
 LOG_TABLE_NAME = 'temp_humidity'
 
 def read_humidity():

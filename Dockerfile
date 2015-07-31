@@ -20,6 +20,9 @@ RUN pip install tornado
 #set up supervisord to run multiple things
 RUN pip install supervisor
 
+#create database & table
+RUN sqlite3 /data/temperature_humidity.db 'create table temp_humidity(Id INTEGER PRIMARY KEY, date TEXT, temp REAL, humidity REAL);'
+
 #copy our python source into /app in the container
 COPY . /app
 
