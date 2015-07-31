@@ -20,12 +20,12 @@ RUN pip install tornado
 #set up supervisord to run multiple things
 RUN pip install supervisor
 
+#create database
+RUN sqlite3 /data/temperature_humidity.db
+RUN python database_setup.py
+
 #copy our python source into /app in the container
 COPY . /app
-
-
-#create database & table
-RUN sudo ./app/database_setup.sh
 
 #run main.py when the container starts
 RUN supervisord -c /app/supervisord.conf
