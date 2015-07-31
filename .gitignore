@@ -1,8 +1,5 @@
 # this things I ignore
 
-.idea/*
-<<<<<<< HEAD
+environment.py
 
-=======
->>>>>>> release/chart_1.0
-enviro_variables.txt
+*.pyc

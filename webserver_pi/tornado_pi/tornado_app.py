@@ -7,9 +7,10 @@ import glob
 import datetime
 import sqlite3
 
-HUMIDITY_LOG_LOCATION = '/500gb_hd/humidity_logs'
+HUMIDITY_LOG_LOCATION = os.environ.get('HUMIDITY_LOG_LOCATION', '/500gb_hd/humidity_logs')
 LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","/500gb_hd/temperature_humidity.db")
 LOG_TABLE_NAME = 'temp_humidity'
+SERVER_PORT = os.environ.get('SERVER_PORT', 8080)
 
 class MainHandler(tornado.web.RequestHandler):
 	def get(self):
@@ -137,7 +138,7 @@ application = tornado.web.Application(handlers, **settings)
 
 
 if __name__ == '__main__':
-	port = os.environ.get('SERVER_PORT', 8080)
+	port = SERVER_PORT
 	print "server starting on port %s" % port
 	application.listen(port)
 	tornado.ioloop.IOLoop.instance().start()
