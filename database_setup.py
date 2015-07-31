@@ -3,7 +3,7 @@ import sys
 import sqlite3
 
 LOG_TABLE_NAME = 'temp_humidity'
-LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","/data/temperature_humidity.db")
+LOG_DATABASE_NAME = os.environ.get("LOG_DATABASE_NAME","temperature_humidity.db")
 
 
 def create_table(database_name, table_name):
