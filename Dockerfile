@@ -22,10 +22,12 @@ RUN pip install supervisor
 
 #create database
 RUN sqlite3 /data/temperature_humidity.db
-RUN python database_setup.py
 
 #copy our python source into /app in the container
 COPY . /app
+
+
+RUN python /app/database_setup.py
 
 #run main.py when the container starts
 RUN supervisord -c /app/supervisord.conf
