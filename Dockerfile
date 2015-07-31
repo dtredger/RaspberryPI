@@ -29,9 +29,7 @@ COPY . /app
 RUN python /app/database_setup.py
 
 #run main.py when the container starts
-RUN supervisord -c /app/supervisord.conf
-
-# CMD ["python", "/app/webserver_pi/tornado_pi/tornado_app.py"]
+CMD ["supervisord", "-c /app/supervisord.conf"]
 
 
 
