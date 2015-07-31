@@ -28,6 +28,8 @@ COPY . /app
 #create database & table
 RUN python /app/database_setup.py
 
+RUN pwd
+
 #run main.py when the container starts
 CMD ["supervisord", "-c /app/supervisord.conf"]
 
